@@ -4,9 +4,13 @@ The project files within this repository contain the jupyter notebooks done as p
 ## PROJECT 1 
 
 Project level:  Beginner
+
 Data used:      Student Marks
+
 Ml model used:  Simple Linear Regression
+
 Aim:            To establish the relationship between the variables and formulate a model to predict the student scores using hours of study/day.
+
 
 The first project is to predict the marks of students using a supervised machine learning model. The data provided to us is an **open source data** of student scores, where we have two variables as given below in the description. 
 
