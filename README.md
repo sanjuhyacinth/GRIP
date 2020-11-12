@@ -45,6 +45,7 @@ Since the dependent variable is **numeric** we are using the **Simple Linear Reg
 * **B. Data Modelling**
      1. Data Splitting
      2. Model Creation & Interpretation
-     3. Model Prediction & Prediction Comparison
-     4. Score of student if study hours is 9.25/day
+     3. Model Prediction
+     4. Model Evaluation
+     5. Score Prediction
      
