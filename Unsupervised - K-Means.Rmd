@@ -1,0 +1,249 @@
+---
+title: "GRIP Task 2 - Unsupervised Algorithm"
+author: "Sanju Hyacinth C"
+date: "14/11/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+# PROJECT AIM: 
+To find the optimum number of clusters from the dataset and visualise them
+
+# DATA:
+Iris - Open source dataset
+
+# ALGORITHM:
+K-Means - Unsupervised Algorithm
+
+
+```{r, include=FALSE}
+
+setwd("C:/Users/DELL/Desktop/Sanju/GRIP/Grip_task 2")
+getwd()
+
+```
+
+# INSTALLING REQUIRED LIBRARIES:
+
+```{r}
+
+# install.packages("patchwork")
+# install.packages("tidyverse")
+# install.packages("gridExtra")
+# install.packages("ggExtra")
+# install.packages("gtable")
+# install.packages("ggpubr")
+
+```
+
+
+# EXPLORATORY DATA ANALYSIS:
+
+```{r}
+
+# loading data
+dsba2 = read.csv("dsba_2.csv",header = TRUE)
+
+# shape of the data
+dim(dsba2)
+
+# top 10 rows
+head(dsba2)
+
+# structure of the data
+str(dsba2)
+
+```
+
+```{r}
+
+# summary of the data:
+summary(dsba2)
+
+```
+
+# Inference:
+
+* No NA values are present in the data.
+* We have 50 numbers each of the species - Setosa, Versicolor & Virginica
+* The mean and median are not far apart indicating less number of outliers.
+
+# DATA VISUALIZATION:
+
+## Boxplots - to examine outliers:
+
+```{r}
+
+library(gridExtra)
+library(ggplot2)
+library(ggpubr)
+
+
+# SEPAL LENGTH:
+
+plot1 = ggplot(data = dsba2)+ geom_boxplot(aes(x = dsba2$Species, 
+                                               y = dsba2$SepalLengthCm, 
+                                               fill = dsba2$Species), width=0.5) + 
+  labs(title = "Boxplot - Sepal Length", 
+       x = "Species", y = "Sepal Length") + theme(legend.position = "none")
+
+# SEPAL WIDTH:
+
+plot2 = ggplot(data = dsba2)+ geom_boxplot(aes(x = dsba2$Species, 
+                                               y = dsba2$SepalWidthCm, 
+                                               fill = dsba2$Species), width=0.5) + 
+  labs(title = "Boxplot - Sepal Width", x = "Species", 
+       y = "Sepal Width") + theme(legend.position = "none")
+
+# PETAL LENGTH:
+
+plot3 = ggplot(data = dsba2)+ geom_boxplot(aes(x = dsba2$Species, 
+                                               y = dsba2$PetalLengthCm, 
+                                               fill = dsba2$Species), width=0.5) + 
+  labs(title = "Boxplot - Petal Length", x = "Species", 
+       y = "Petal Length") + theme(legend.position = "none")
+
+# PETAL WIDTH:
+
+plot4 = ggplot(data = dsba2)+ geom_boxplot(aes(x = dsba2$Species, 
+                                               y = dsba2$PetalWidthCm, 
+                                               fill = dsba2$Species), width=0.5) + 
+  labs(title = "Boxplot - Petal Width", x = "Species", 
+       y = "Petal Width") + theme(legend.position = "none")
+
+
+grid.arrange(plot1, plot2, plot3, plot4, ncol=2)
+
+```
+
+# Inference:
+
+* We have some outliers in all the columns.
+* Virginica and Setosa are respectively the largest and the smallest of the flowers.
+* Sepal Width is different from the other attributes.
+
+
+```{r}
+
+# Correlation:
+
+library(corrplot)
+
+dsba2_plot = corrplot(cor(dsba2[, 2:5]), 
+                      method = "number", 
+                      tl.cex = 0.5, 
+                      tl.col = "dark blue")
+
+```
+
+#Finding the optimal number of clusters:
+
+```{r}
+
+## Finding optimal number of clusters from WSS
+
+wssplot = function(data, nc=15, seed=123){
+  wss = (nrow(data)-1)*sum(apply(data,2,var))
+  for (i in 2:nc){
+    set.seed(seed)
+    wss[i] <- sum(kmeans(data, centers=i)$withinss)}
+  plot(1:nc, wss, type="b", xlab="Number of Clusters",
+       ylab="Within groups sum of squares")}
+
+wssplot(dsba2[,2:5], nc=10)
+
+```
+
+```{r}
+
+## Identifying the optimal number of clusters using NbClust:
+
+library(NbClust)
+
+set.seed(123)
+Nclus <- NbClust(dsba2[,2:5], min.nc=2, max.nc=4, method="kmeans")
+table(Nclus$Best.n[1,])
+
+```
+
+```{r}
+
+barplot(table(Nclus$Best.n[1,]),
+          xlab="Numer of Clusters", ylab="Number of Criteria",
+          main="Number of Clusters Chosen by 26 Criteria")
+
+# According to the majority rule, the best number of clusters is  2
+
+```
+
+
+# Forming & Plotting the clusters:
+
+```{r}
+
+kmeans_clust = kmeans(x=dsba2[,2:5], centers = 2, nstart = 5)
+kmeans_clust
+
+# K-means clustering with 2 clusters of sizes 97, 53
+# the percentage similarity between data in the same cluster is 77.6 
+
+```
+
+```{r}
+
+# Plotting the clusters
+
+library(fpc)
+library(cluster)
+plotcluster(dsba2[,2:5], kmeans_clust$cluster)
+
+# Better plot:
+clusplot(dsba2[,2:5], main = "Clusterplot - When k=2", 
+         kmeans_clust$cluster, 
+         color=TRUE, shade=TRUE, labels=2, lines=1)
+
+```
+
+
+# Clustering Validation - Silhouette Width:
+
+```{r}
+
+library(factoextra)
+
+# When k=2
+sil_k2 <- silhouette(kmeans_clust$cluster, dist(dsba2[,2:5]))
+fviz_silhouette(sil_k2)
+
+# Cluster 1 (97 data points) has avg.sil.width of 0.63
+# Cluster 2 (53 data points) has avg.sil.width of 0.77
+# Average silhouette width : 0.68
+
+```
+
+# Inference:
+
+We have separated or categorised our data into two clusters. The data within each cluster are about 77.6% similar and the K-Means model has performed well having a Silhouette width of 0.68 on an average, making the model good for categorisation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
