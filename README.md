@@ -9,6 +9,8 @@ The project files within this repository contain the jupyter notebooks done as p
 
 * **Ml model used**:  Simple Linear Regression
 
+* **Tool used**:      Python - Jupyter Notebook
+
 * **Aim**:            To establish the relationship between the variables and formulate a model to predict the student scores using hours of study/day.
 
 
@@ -49,3 +51,29 @@ Since the dependent variable is **numeric** we are using the **Simple Linear Reg
      4. Model Evaluation
      5. Score Prediction
      
+
+## PROJECT 2 
+
+* **Project level**:  Beginner
+
+* **Data used**:      Iris
+
+* **Ml model used**:  K-Means Clustering
+
+* **Tool used**:      R programming - R Studio
+
+* **Aim**:            To analyse, find the optimum number of clusters to categorise the data and visualise them.
+
+## Data description:
+This famous (Fisher's or Anderson's) iris data set gives the measurements in centimeters of the variables sepal length and width and petal length and width, respectively, for 50 flowers from each of 3 species of iris. The species are Iris setosa, versicolor, and virginica. 
+
+"iris" is a data frame with 150 cases (rows) and 5 variables (columns) named Sepal.Length, Sepal.Width, Petal.Length, Petal.Width, and Species.
+
+### Table Of Contents:
+
+* **A. Exploratory Data Analysis & Inference**
+* **B. Data Visualization & Inference**
+* **C. Finding Optimal number of clusters**
+* **D. Forming & Plotting the clusters**
+* **E. Clustering Validation - Silhouette Width**
+* **F. Inference**
